@@ -54,7 +54,7 @@ done
 
 mariadb -e "CREATE DATABASE $sqldb; CREATE USER $sqlusername@localhost IDENTIFIED BY '$sqlpassword'; GRANT ALL ON ejabberd.* TO $sqlusername@localhost"
 
-echo "
+echo """
 --
 -- ejabberd, Copyright (C) 2002-2023   ProcessOne
 --
@@ -520,10 +520,12 @@ CREATE TABLE mqtt_pub (
     user_properties blob NOT NULL,
     expiry int unsigned NOT NULL,
     UNIQUE KEY i_mqtt_topic (topic(191))
-) ENGINE=InnoDB CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;" | mariadb -D $sqldb
+) ENGINE=InnoDB CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;""" | mariadb -D $sqldb
 
-echo "Generating dhfile..."
-openssl dhparam -out /etc/ssl/dh2048.pem 2048
+if [ ! -f /etc/ssl/dh2048.pem ]
+    echo "Generating dhfile..."
+    openssl dhparam -out /etc/ssl/dh2048.pem 2048
+fi
 
 echo "HTTP uploads in XMPP are stored on the server itself. There are many
 different parameters you can configure with respect to HTTP uploads. A soft
