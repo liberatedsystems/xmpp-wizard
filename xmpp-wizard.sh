@@ -8,8 +8,8 @@ pacman -S --noconfirm ejabberd
 read -p "Enter your domain: " domain
 
 domains=("$domain" "conference.$domain" "proxy.$domain" "pubsub.$domain" "upload.$domain")
-certdirs=("/etc/letsencrypt/live/${domains[0]}" "/etc/letsencrypt/live/${domains[1]}" "/etc/letsencrypt/live/${domains[2]}" "/etc/letsencrypt/live/${domains[3]}" "/etc/letsencrypt/live/${domains[5]}")
-ejabberdcertdirs=("${ejabberdtlsdir}/${domains[0]}.pem" "${ejabberdtlsdir}/${domains[1]}.pem" "${ejabberdtlsdir}/${domains[2]}.pem" "${ejabberdtlsdir}/${domains[3]}.pem" "${ejabberdtlsdir}/${domains[5]}.pem")
+certdirs=("/etc/letsencrypt/live/${domains[0]}" "/etc/letsencrypt/live/${domains[1]}" "/etc/letsencrypt/live/${domains[2]}" "/etc/letsencrypt/live/${domains[3]}" "/etc/letsencrypt/live/${domains[4]}")
+ejabberdcertdirs=("${ejabberdtlsdir}/${domains[0]}.pem" "${ejabberdtlsdir}/${domains[1]}.pem" "${ejabberdtlsdir}/${domains[2]}.pem" "${ejabberdtlsdir}/${domains[3]}.pem" "${ejabberdtlsdir}/${domains[4]}.pem")
 
 index=0
 
