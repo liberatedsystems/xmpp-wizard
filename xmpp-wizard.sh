@@ -282,14 +282,14 @@ CREATE TABLE pubsub_node_option (
   val text NOT NULL
 ) ENGINE=InnoDB CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 CREATE INDEX i_pubsub_node_option_nodeid ON pubsub_node_option(nodeid);
-ALTER TABLE `pubsub_node_option` ADD FOREIGN KEY (`nodeid`) REFERENCES `pubsub_node` (`nodeid`) ON DELETE CASCADE;
+ALTER TABLE \`pubsub_node_option\` ADD FOREIGN KEY (\`nodeid\`) REFERENCES \`pubsub_node\` (\`nodeid\`) ON DELETE CASCADE;
 
 CREATE TABLE pubsub_node_owner (
   nodeid bigint,
   owner text NOT NULL
 ) ENGINE=InnoDB CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 CREATE INDEX i_pubsub_node_owner_nodeid ON pubsub_node_owner(nodeid);
-ALTER TABLE `pubsub_node_owner` ADD FOREIGN KEY (`nodeid`) REFERENCES `pubsub_node` (`nodeid`) ON DELETE CASCADE;
+ALTER TABLE \`pubsub_node_owner\` ADD FOREIGN KEY (\`nodeid\`) REFERENCES \`pubsub_node\` (\`nodeid\`) ON DELETE CASCADE;
 
 CREATE TABLE pubsub_state (
   nodeid bigint,
@@ -300,7 +300,7 @@ CREATE TABLE pubsub_state (
 ) ENGINE=InnoDB CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 CREATE INDEX i_pubsub_state_jid ON pubsub_state(jid(60));
 CREATE UNIQUE INDEX i_pubsub_state_tuple ON pubsub_state(nodeid, jid(60));
-ALTER TABLE `pubsub_state` ADD FOREIGN KEY (`nodeid`) REFERENCES `pubsub_node` (`nodeid`) ON DELETE CASCADE;
+ALTER TABLE \`pubsub_state\` ADD FOREIGN KEY (\`nodeid\`) REFERENCES \`pubsub_node\` (\`nodeid\`) ON DELETE CASCADE;
 
 CREATE TABLE pubsub_item (
   nodeid bigint,
@@ -312,7 +312,7 @@ CREATE TABLE pubsub_item (
 ) ENGINE=InnoDB CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 CREATE INDEX i_pubsub_item_itemid ON pubsub_item(itemid(36));
 CREATE UNIQUE INDEX i_pubsub_item_tuple ON pubsub_item(nodeid, itemid(36));
-ALTER TABLE `pubsub_item` ADD FOREIGN KEY (`nodeid`) REFERENCES `pubsub_node` (`nodeid`) ON DELETE CASCADE;
+ALTER TABLE \`pubsub_item\` ADD FOREIGN KEY (\`nodeid\`) REFERENCES \`pubsub_node\` (\`nodeid\`) ON DELETE CASCADE;
 
 CREATE TABLE pubsub_subscription_opt (
   subid text NOT NULL,
