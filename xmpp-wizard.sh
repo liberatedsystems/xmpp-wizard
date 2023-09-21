@@ -523,6 +523,7 @@ CREATE TABLE mqtt_pub (
 ) ENGINE=InnoDB CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;""" | mariadb -D $sqldb
 
 if [ ! -f /etc/ssl/dh2048.pem ]
+then
     echo "Generating dhfile..."
     openssl dhparam -out /etc/ssl/dh2048.pem 2048
 fi
