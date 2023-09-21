@@ -613,11 +613,11 @@ acme:
   auto: false
 
 certfiles:
-  - ${ejabberdtlsdirs[0]}
-  - ${ejabberdtlsdirs[1]}
-  - ${ejabberdtlsdirs[2]}
-  - ${ejabberdtlsdirs[3]}
-  - ${ejabberdtlsdirs[4]}
+  - ${ejabberdcertdirs[0]}
+  - ${ejabberdcertdirs[1]}
+  - ${ejabberdcertdirs[2]}
+  - ${ejabberdcertdirs[3]}
+  - ${ejabberdcertdirs[4]}
 
 c2s_ciphers: TLS_CIPHERS
 c2s_protocol_options: TLS_OPTIONS
