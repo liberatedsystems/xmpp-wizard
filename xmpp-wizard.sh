@@ -22,10 +22,12 @@ for vhost in ${domains[@]}; do # for each vhost
             if systemctl is-active --quiet nginx
             then
                 pacman -S --noconfirm certbot-nginx
-                certbot -d "$vhost" certonly --nginx --register-unsafely-without-email --agree-tos # request cert with nginx
+                certbot -d "$vhost" certonly --nginx --register-unsafely-without-email --agree-tos &&
+                    certdir[$index]="/etc/letsencrypt/live/$vhost" # request cert with nginx
             else
                 pacman -S --noconfirm certbot
-                certbot -d "$vhost" certonly --standalone --register-unsafely-without-email --agree-tos # request cert with certbot
+                certbot -d "$vhost" certonly --standalone --register-unsafely-without-email --agree-tos &&
+                    certdir[$index]="/etc/letsencrypt/live/$vhost" # request cert with certbot
             fi
     [ ! -d "$certdir[$index]" ] && echo "Error locating or installing SSL certificate." && exit 1
 done
