@@ -14,22 +14,22 @@ index=0
 # try to find any existing certificates for the various vhosts required by
 # ejabberd, otherwise retrieve them via certbot
 for vhost in ${domains[@]}; do # for each vhost
-    [ ! -d "${certdir[$index]}" ] && # if default cert dir for the vhost doesn't exist
-        certdir[$index]=$(certbot certificates 2>/dev/null | grep "Domains:.* \(\*\.$domain\|$vhost\)\(\s\|$\)" -A 2 | awk '/Certificate Path/ {print $3}' | head -n1) # set cert dir for certificate
+    [ ! -d "${certdirs[$index]}" ] && # if default cert dir for the vhost doesn't exist
+        certdirs[$index]=$(certbot certificates 2>/dev/null | grep "Domains:.* \(\*\.$domain\|$vhost\)\(\s\|$\)" -A 2 | awk '/Certificate Path/ {print $3}' | head -n1) # set cert dir for certificate
         ((index++))
 
-        [ ! -d "${certdir[$index]}" ] && # if there is no certificate for the domain 
+        [ ! -d "${certdirs[$index]}" ] && # if there is no certificate for the domain 
             if systemctl is-active --quiet nginx
             then
                 pacman -S --noconfirm certbot-nginx
                 certbot -d "$vhost" certonly --nginx --register-unsafely-without-email --agree-tos &&
-                    certdir[$index]="/etc/letsencrypt/live/$vhost" # request cert with nginx
+                    certdirs[$index]="/etc/letsencrypt/live/$vhost" # request cert with nginx
             else
                 pacman -S --noconfirm certbot
                 certbot -d "$vhost" certonly --standalone --register-unsafely-without-email --agree-tos &&
-                    certdir[$index]="/etc/letsencrypt/live/$vhost" # request cert with certbot
+                    certdirs[$index]="/etc/letsencrypt/live/$vhost" # request cert with certbot
             fi
-    [ ! -d "${certdir[$index]}" ] && echo "Error locating or installing SSL certificate." && exit 1
+    [ ! -d "${certdirs[$index]}" ] && echo "Error locating or installing SSL certificate." && exit 1
 done
 
 read -p "Enter the username for the admin user: " adminusername
