@@ -21,7 +21,7 @@ for vhost in ${domains[@]}; do # for each vhost
         [ ! -d "$certdir[$index]" ] && # if there is no certificate for the domain 
             if systemctl is-active --quiet nginx
             then
-                pacman -S --noconfirm python3-certbot-nginx
+                pacman -S --noconfirm certbot-nginx
                 certbot -d "$vhost" certonly --nginx --register-unsafely-without-email --agree-tos # request cert with nginx
             else
                 pacman -S --noconfirm certbot
