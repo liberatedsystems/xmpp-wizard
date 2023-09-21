@@ -7,9 +7,9 @@ pacman -S --noconfirm ejabberd
 
 read -p "Enter your domain: " domain
 
-domains=("conference.$domain" "proxy.$domain" "pubsub.$domain" "upload.$domain")
-certdirs=("/etc/letsencrypt/live/$domain" "/etc/letsencrypt/live/${domains[0]}" "/etc/letsencrypt/live/${domains[1]}" "/etc/letsencrypt/live/${domains[2]}" "/etc/letsencrypt/live/${domains[3]}")
-ejabberdcertdirs=("${ejabberdtlsdir}/${domain}.pem" "${ejabberdtlsdir}/${domains[0]}.pem" "${ejabberdtlsdir}/${domains[1]}.pem" "${ejabberdtlsdir}/${domains[2]}.pem" "${ejabberdtlsdir}/${domains[3]}.pem")
+domains=("$domain" "conference.$domain" "proxy.$domain" "pubsub.$domain" "upload.$domain")
+certdirs=("/etc/letsencrypt/live/${domains[0]}" "/etc/letsencrypt/live/${domains[1]}" "/etc/letsencrypt/live/${domains[2]}" "/etc/letsencrypt/live/${domains[3]}" "/etc/letsencrypt/live/${domains[5]}")
+ejabberdcertdirs=("${ejabberdtlsdir}/${domains[0]}.pem" "${ejabberdtlsdir}/${domains[1]}.pem" "${ejabberdtlsdir}/${domains[2]}.pem" "${ejabberdtlsdir}/${domains[3]}.pem" "${ejabberdtlsdir}/${domains[5]}.pem")
 
 index=0
 
@@ -783,9 +783,9 @@ modules:
   mod_fail2ban: {}
   mod_http_api: {}
   mod_http_upload:
-    put_url: \"https://${domains[3]}/upload/@HOST@\"
+    put_url: \"https://${domains[4]}/upload/@HOST@\"
     hosts:
-      - ${domains[3]}
+      - ${domains[4]}
     custom_headers:
       \"Access-Control-Allow-Origin\": \"*\"
       \"Access-Control-Allow-Methods\": \"GET,HEAD,PUT,OPTIONS\"
@@ -867,7 +867,7 @@ echo "Installing nginx upload vhost file..."
 
 echo "
 server {
-    server_name ${domains[3]};
+    server_name ${domains[4]};
    
     listen 443 ssl; 
     ssl_certificate ${certdirs[4]}/fullchain.pem;
@@ -885,19 +885,19 @@ server {
 
 }
 server {
-    if (\$host = ${domains[3]}) {
+    if (\$host = ${domains[4]}) {
         return 301 https://\$host\$request_uri;
     }
 
 
-    server_name ${domains[3]};
+    server_name ${domains[4]};
 
     listen 80;
     return 404;
 
 
-}" > /etc/nginx/sites-available/${domains[3]} # direct uploads to ejabberd
+}" > /etc/nginx/sites-available/${domains[4]} # direct uploads to ejabberd
 
-ln -s /etc/nginx/sites-available/${domains[3]} /etc/nginx/sites-enabled/${domains[3]}
+ln -s /etc/nginx/sites-available/${domains[4]} /etc/nginx/sites-enabled/${domains[4]}
 
 systemctl restart nginx
