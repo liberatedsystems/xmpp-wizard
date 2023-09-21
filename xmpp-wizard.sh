@@ -60,7 +60,7 @@ echo "Creating ejabberd TLS cert files..." # we have to create special TLS
                                            # certs just for ejabberd because 
                                            # it's a special snowflake who 
                                            # reads the guardian
-for vhost in ${certdirs[@]}; do # for each vhost
+for vhost in ${domains[@]}; do # for each vhost
     # concatenate the private key and fullchain into one file
     cat ${certdirs[$index]}/privkey.pem ${certdirs[$index]}/fullchain.pem > ${ejabberdtlsdir}/${vhost}.pem 
     # update file perms
