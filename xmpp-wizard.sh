@@ -1,6 +1,7 @@
 #!/bin/sh
 sqldb="ejabberd"
 sqlusername="ejabberd"
+ejabberdtlsdir="/var/lib/ejabberd"
 
 pacman -S --noconfirm ejabberd
 
@@ -8,6 +9,7 @@ read -p "Enter your domain: " domain
 
 domains=("conference.$domain" "proxy.$domain" "pubsub.$domain" "upload.$domain")
 certdirs=("/etc/letsencrypt/live/$domain" "/etc/letsencrypt/live/${domains[0]}" "/etc/letsencrypt/live/${domains[1]}" "/etc/letsencrypt/live/${domains[2]}" "/etc/letsencrypt/live/${domains[3]}")
+ejabberdcertdirs=("${ejabberdtlsdir}/${domain}.pem" "${ejabberdtlsdir}/${domains[0]}.pem" "${ejabberdtlsdir}/${domains[1]}.pem" "${ejabberdtlsdir}/${domains[2]}.pem" "${ejabberdtlsdir}/${domains[3]}.pem")
 
 index=0
 
@@ -51,6 +53,22 @@ while read -p "$sqlpassword is this correct? (y/n): " confirm; do
         continue
     fi
 done
+
+index=0
+
+echo "Creating ejabberd TLS cert files..." # we have to create special TLS
+                                           # certs just for ejabberd because 
+                                           # it's a special snowflake who 
+                                           # reads the guardian
+for vhost in ${certdirs[@]}; do # for each vhost
+    # concatenate the private key and fullchain into one file
+    cat ${certdirs[$index]}/privkey.pem ${certdirs[$index]}/fullchain.pem > ${ejabberdtlsdir}/${vhost}.pem 
+    # update file perms
+    chown jabber:jabber ${ejabberdtlsdir}/${vhost}.pem
+    chmod 700 ${ejabberdtlsdir}/${vhost}.pem
+done
+
+echo "Setting up ejabberd SQL database..."
 
 mariadb -e "CREATE DATABASE $sqldb; CREATE USER $sqlusername@localhost IDENTIFIED BY '$sqlpassword'; GRANT ALL ON ejabberd.* TO $sqlusername@localhost"
 
@@ -595,10 +613,11 @@ acme:
   auto: false
 
 certfiles:
-  - ${domains[0]}
-  - ${domains[1]}
-  - ${domains[2]}
-  - ${domains[3]}
+  - ${ejabberdtlsdirs[0]}
+  - ${ejabberdtlsdirs[1]}
+  - ${ejabberdtlsdirs[2]}
+  - ${ejabberdtlsdirs[3]}
+  - ${ejabberdtlsdirs[4]}
 
 c2s_ciphers: TLS_CIPHERS
 c2s_protocol_options: TLS_OPTIONS
