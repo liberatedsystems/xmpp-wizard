@@ -863,8 +863,8 @@ server {
 
 }
 server {
-    if ($host = ${domains[3]}) {
-        return 301 https://$host$request_uri;
+    if (\$host = ${domains[3]}) {
+        return 301 https://\$host\$request_uri;
     }
 
 
