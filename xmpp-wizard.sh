@@ -13,9 +13,9 @@ read -p "Enter your domain: " domain
 
 index=0
 
- try to find any existing certificates for the various vhosts required by
- ejabberd, otherwise retrieve them via certbot
-for $vhost in ${domains[@]}; do # for each vhost
+# try to find any existing certificates for the various vhosts required by
+# ejabberd, otherwise retrieve them via certbot
+for vhost in ${domains[@]}; do # for each vhost
     [ ! -d "$certdir[$index]" ] && # if default cert dir for the vhost doesn't exist
         certdir[$index]=$(certbot certificates 2>/dev/null | grep "Domains:.* \(\*\.$domain\|$vhost\)\(\s\|$\)" -A 2 | awk '/Certificate Path/ {print $3}' | head -n1) # set cert dir for certificate
     ((index++))
