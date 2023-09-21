@@ -2,14 +2,12 @@
 sqldb="ejabberd"
 sqlusername="ejabberd"
 
-
 pacman -S --noconfirm ejabberd
 
-domains=("conference.$domain" "proxy.$domain" "pubsub.$domain" "upload.$domain")
-
-certdirs=("/etc/letsencrypt/live/$domain" "/etc/letsencrypt/live/${domains[0]}" "/etc/letsencrypt/live/${domains[1]}" "/etc/letsencrypt/live/${domains[2]}" "/etc/letsencrypt/live/${domains[3]}")
-
 read -p "Enter your domain: " domain
+
+domains=("conference.$domain" "proxy.$domain" "pubsub.$domain" "upload.$domain")
+certdirs=("/etc/letsencrypt/live/$domain" "/etc/letsencrypt/live/${domains[0]}" "/etc/letsencrypt/live/${domains[1]}" "/etc/letsencrypt/live/${domains[2]}" "/etc/letsencrypt/live/${domains[3]}")
 
 index=0
 
