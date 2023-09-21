@@ -858,7 +858,10 @@ modules:
 ### End:
 ### vim: set filetype=yaml tabstop=8""" > /etc/ejabberd/ejabberd.yml
 
+chown jabber:jabber /etc/ejabberd/ejabberd.yml
 chmod 700 /etc/ejabberd/ejabberd.yml
+
+systemctl start ejabberd && systemctl enable ejabberd
 
 echo "Installing nginx upload vhost file..."
 
