@@ -43,7 +43,7 @@ while read -p "$adminusername@$domain is this correct? (y/n): " confirm; do
 done
 
 read -p "Enter the password for the ejabberd SQL user: " sqlpassword
-while read -p "$adminpassword is this correct? (y/n): " confirm; do
+while read -p "$sqlpassword is this correct? (y/n): " confirm; do
     if [ "$confirm" == "y" ]; then
         break
     else
