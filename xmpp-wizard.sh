@@ -730,7 +730,7 @@ api_permissions:
 
 shaper:
   normal:
-  rate: 1000000 # monal (iOS XMPP client) only has 30 seconds to load messages (of which there could be many) from a push notification, hence the high rate
+    rate: 1000000 # monal (iOS XMPP client) only has 30 seconds to load messages (of which there could be many) from a push notification, hence the high rate
     burst_size: 5000000 # see above
   fast: 50000000
 
