@@ -980,4 +980,37 @@ ln -s /etc/nginx/sites-available/${domains[4]} /etc/nginx/sites-enabled/${domain
 
 systemctl restart nginx
 
-echo "Done!"
+echo "
+ .                                                        . 
+ .......                                          .  ...... 
+ .:::::::==+==-:                            .:--===-::::::: 
+ .:::::::==*####***                      :+++++++==-::::::. 
+  ::::::-==+#**####.                     -+++++++==-::::::  
+   ------===*####*#.                     +++++++===------.  
+    ------==+######=                    .+++++++===-----.   
+     -=-=====*#####*                    -++++++========.    
+      ========####*#=                  .++++++========.     
+       -======+######.                 =++++++=======.      
+        :+++===+#####*                -++++++===+++-        
+         .-+++==+*####+              -+++++===+++=.         
+           .=++===*##*#*            -+++++===++=:           
+             :=====+##*#*.         -+++++=====:             
+               .-===+*####-      .=++++====-.               
+                  :===+*###*.   -+++++===-.                 
+                    .-==+*###=:=++++==-:                    
+                       .:-=+*##*+==-:.                      
+                         .====**#*=.                        
+                      :-+++=-..:=+**+:.                     
+                 .:-===-:.         :-=+=-:..                
+                ::...                   ...:.   
+                      CONGRATULATIONS!
+
+Your XMPP server has been successfully configured and is ready for clients to
+begin chatting. All you need to do now is create a user for the admin account,
+using the commands below:
+set +o history
+sudo -u jabber ejabberdctl register $adminusername $domain \"password\"
+set -o history
+
+Make sure to run the set commands so your XMPP password isn't stored in your
+.bash_history ;)"
