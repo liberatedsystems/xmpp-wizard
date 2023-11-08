@@ -16,6 +16,7 @@ Mariadb
 
 ## Running
 The script should be run as root.
+
 ```doas/sudo bash xmpp-wizard.sh```
 
 ## To do
