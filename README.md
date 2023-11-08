@@ -4,8 +4,8 @@ An XMPP server is hecking hard to configure!! But not any more.
 You too, can be an XMPP server operator, through the use of this simple script!
 No scouring over documentation for hours or headache required ;)
 
-However, celibacy is required, since this script is written for use on **Arch
-Linux* only**.
+However, celibacy is required, since this script is written for use on __Arch
+Linux* only__.
 
 ## Prerequisites
 Make sure you have the following packages installed:
