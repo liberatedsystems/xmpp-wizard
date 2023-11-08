@@ -743,11 +743,6 @@ shaper_rules:
     normal: all
   s2s_shaper: fast"
 
-upload2="
-  soft_upload_quota:
-    $softquota: all # MB
-  hard_upload_quota:
-    $hardquota: all # MB"
 
 modules1="
 modules:
@@ -878,6 +873,31 @@ the user has on the server is less than the soft quota.
 Would you like to enable HTTP uploads?" httpuploads
 
 if [ "$httpuploads" == "y" ]; then
+    read -p "What soft quota would you like to set per user? (MB): " softquota
+    while read -p "$softquota MB is this correct? (y/n):" confirm; do
+        if [ "$confirm" == "y" ]; then
+            break
+        else
+            read -p "What soft quota would you like to set per user? (MB): " softquota
+            continue
+        fi
+    done
+
+    read -p "What hard quota would you like to set per user? (MB): " hardquota
+    while read -p "$hardquota MB is this correct? (y/n): " confirm; do
+        if [ "$confirm" == "y" ]; then
+            break
+        else
+            read -p "What hard quota would you like to set per user? (MB): " hardquota
+            continue
+        fi
+    done
+    upload2="
+      soft_upload_quota:
+        $softquota: all # MB
+      hard_upload_quota:
+        $hardquota: all # MB"
+
     if [ "$stunturn" == "y" ]; then
         config+=${upload1}
         config+=${stun1}
@@ -897,26 +917,6 @@ if [ "$httpuploads" == "y" ]; then
         config+=${modules2}
         config+=${footer}
     fi
-
-    read -p "What soft quota would you like to set per user? (MB): " softquota
-    while read -p "$softquota MB is this correct? (y/n): " confirm; do
-        if [ "$confirm" == "y" ]; then
-            break
-        else
-            read -p "What soft quota would you like to set per user? (MB): " softquota
-            continue
-        fi
-    done
-
-    read -p "What hard quota would you like to set per user? (MB): " hardquota
-    while read -p "$hardquota MB is this correct? (y/n): " confirm; do
-        if [ "$confirm" == "y" ]; then
-            break
-        else
-            read -p "What hard quota would you like to set per user? (MB): " hardquota
-            continue
-        fi
-    done
 else
     if [ "$stunturn" == "y" ]; then
         config+=${stun1}
