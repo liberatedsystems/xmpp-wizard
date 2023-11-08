@@ -863,18 +863,18 @@ read -p "Some XMPP clients may support P2P voice / video calls, but will require
 assistance from the server in order to be able to connect to each other through
 networks with NAT (almost every network). 
 Would you like to enable the STUN/TURN server within ejabberd to relay traffic
-for these clients so their calls will work correctly?" stunturn
+for these clients so their calls will work correctly? (y/n): " stunturn
 
 read -p "HTTP uploads (XEP-0363) in XMPP are stored on the server itself. There
 are many different parameters you can configure with respect to HTTP uploads. A
 soft quota can be set per user, along with a hard quota. After the hard quota
 is exceeded, files are deleted from the oldest until the total size of files
 the user has on the server is less than the soft quota.
-Would you like to enable HTTP uploads?" httpuploads
+Would you like to enable HTTP uploads? (y/n): " httpuploads
 
 if [ "$httpuploads" == "y" ]; then
     read -p "What soft quota would you like to set per user? (MB): " softquota
-    while read -p "$softquota MB is this correct? (y/n):" confirm; do
+    while read -p "$softquota MB is this correct? (y/n): " confirm; do
         if [ "$confirm" == "y" ]; then
             break
         else
