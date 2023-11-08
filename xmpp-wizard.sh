@@ -893,10 +893,10 @@ if [ "$httpuploads" == "y" ]; then
         fi
     done
     upload2="
-      soft_upload_quota:
-        $softquota: all # MB
-      hard_upload_quota:
-        $hardquota: all # MB"
+  soft_upload_quota:
+    $softquota: all # MB
+  hard_upload_quota:
+    $hardquota: all # MB"
 
     if [ "$stunturn" == "y" ]; then
         config+=${upload1}
