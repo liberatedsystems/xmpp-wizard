@@ -859,6 +859,17 @@ footer="
 ### End:
 ### vim: set filetype=yaml tabstop=8"
 
+footernostun="
+  mod_vcard: {}
+  mod_vcard_xupdate: {}
+  mod_version:
+    show_os: false
+
+### Local Variables:
+### mode: yaml
+### End:
+### vim: set filetype=yaml tabstop=8"
+
 read -p "Some XMPP clients may support P2P voice / video calls, but will require
 assistance from the server in order to be able to connect to each other through
 networks with NAT (almost every network). 
@@ -915,7 +926,7 @@ if [ "$httpuploads" == "y" ]; then
         config+=${modules1}
         config+=${upload3}
         config+=${modules2}
-        config+=${footer}
+        config+=${footernostun}
     fi
 else
     if [ "$stunturn" == "y" ]; then
@@ -929,7 +940,7 @@ else
         config+=${midsection}
         config+=${modules1}
         config+=${modules2}
-        config+=${footer}
+        config+=${footernostun}
     fi
 fi
 
