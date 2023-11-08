@@ -903,7 +903,7 @@ if [ "$httpuploads" == "y" ]; then
         config+=${stun1}
         config+=${midsection}
         config+=${upload2}
-        config+=${modules}
+        config+=${modules1}
         config+=${upload3}
         config+=${modules2}
         config+=${stun2}
@@ -912,7 +912,7 @@ if [ "$httpuploads" == "y" ]; then
         config+=${upload1}
         config+=${midsection}
         config+=${upload2}
-        config+=${modules}
+        config+=${modules1}
         config+=${upload3}
         config+=${modules2}
         config+=${footer}
@@ -921,13 +921,13 @@ else
     if [ "$stunturn" == "y" ]; then
         config+=${stun1}
         config+=${midsection}
-        config+=${modules}
+        config+=${modules1}
         config+=${modules2}
         config+=${stun2}
         config+=${footer}
     else
         config+=${midsection}
-        config+=${modules}
+        config+=${modules1}
         config+=${modules2}
         config+=${footer}
     fi
