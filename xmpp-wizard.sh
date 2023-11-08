@@ -5,322 +5,6 @@ sqlusername="ejabberd"
 
 ejabberdtlsdir="/var/lib/ejabberd"
 
-config="
-###
-###              ejabberd configuration file
-###
-### The parameters used in this configuration file are explained at
-###
-###       https://docs.ejabberd.im/admin/configuration
-###
-### The configuration file is written in YAML.
-### *******************************************************
-### *******           !!! WARNING !!!               *******
-### *******     YAML IS INDENTATION SENSITIVE       *******
-### ******* MAKE SURE YOU INDENT SECTIONS CORRECTLY *******
-### *******************************************************
-### Refer to http://en.wikipedia.org/wiki/YAML for the brief description.
-###
-
-# strict TLS configuration to disable insecure ciphers and TLS versions
-define_macro:
-  BACKLOG: 50
-  DH_FILE: /etc/ssl/dh2048.pem
-  CIPHERS: \"ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA256\"
-  TLS_OPTIONS:
-    - \"no_sslv2\"
-    - \"no_sslv3\"
-    - \"no_tlsv1\"
-    - \"no_tlsv1_1\"
-    - \"cipher_server_preference\"
-    - \"no_compression\"
-
-hosts:
-  - $domain
-
-loglevel: info
-
-acme:
-  auto: false
-
-certfiles:
-  - ${ejabberdcertdirs[0]}
-  - ${ejabberdcertdirs[1]}
-  - ${ejabberdcertdirs[2]}
-  - ${ejabberdcertdirs[3]}
-  - ${ejabberdcertdirs[4]}
-
-c2s_ciphers: TLS_CIPHERS
-c2s_protocol_options: TLS_OPTIONS
-c2s_dhfile: DH_FILE
-s2s_ciphers: TLS_CIPHERS
-s2s_protocol_options: TLS_OPTIONS
-s2s_dhfile: DH_FILE
-s2s_use_starttls: required
-
-listen:
-  -
-    port: 5222
-    ip: \"::\"
-    module: ejabberd_c2s
-    max_stanza_size: 262144    
-    starttls: true
-    starttls_required: false
-    tls_compression: false
-    shaper: c2s_shaper
-    access: c2s
-    backlog: BACKLOG
-  -
-    port: 5223
-    ip: \"::\"
-    tls: true
-    backlog: BACKLOG
-    module: ejabberd_c2s
-    max_stanza_size: 262144
-    shaper: c2s_shaper
-    access: c2s
-    tls_compression: false
-  -
-    port: 5269
-    ip: \"::\"
-    module: ejabberd_s2s_in
-    max_stanza_size: 524288
-    tls_compression: false
-  -
-    port: 5270
-    ip: \"::\"
-    backlog: BACKLOG
-    module: ejabberd_s2s_in
-    max_stanza_size: 524288
-    tls_compression: false
-  -
-    port: 5280
-    ip: \"::\"
-    module: ejabberd_http
-    request_handlers:
-      /admin: ejabberd_web_admin
-      /.well-known/acme-challenge: ejabberd_acme"
-
-upload1="
-      /upload: mod_http_upload"
-
-stun1="
-  -
-    port: 3478
-    ip: \"::\"
-    transport: udp
-    module: ejabberd_stun
-    use_turn: true"
-
-midsection="
-  -
-    port: 1883
-    ip: \"::\"
-    module: mod_mqtt
-    backlog: 1000
-
-auth_method: sql
-default_db: sql
-
-sql_type: mysql
-sql_server: \"localhost\"
-sql_database: \"$sqldb\"
-sql_username: \"$sqlusername\"
-sql_password: \"$sqlpassword\"
-
-acl:
-  admin:
-    user: $adminusername@$domain
-  local:
-    user_regexp: \"\"
-  loopback:
-    ip:
-      - 127.0.0.0/8
-      - ::1/128
-
-access_rules:
-  configure:
-    allow: admin # only allow an admin to configure the server
-  local:
-    allow: local
-  c2s:
-    allow: all
-    deny: blocked
-  announce:
-    allow: admin # only allow an admin to send announcements
-  muc_create:
-    allow: admin # only allow an admin to create MUCs
-  pubsub_createnode:
-    allow: local
-  trusted_network:
-    allow: loopback
-
-api_permissions:
-  \"console commands\":
-    from:
-      - ejabberd_ctl
-    who: all
-    what: \"*\"
-  \"admin access\":
-    who:
-      access:
-        allow:
-          - acl: loopback
-          - acl: admin
-      oauth:
-        scope: \"ejabberd:admin\"
-        access:
-          allow:
-            - acl: loopback
-            - acl: admin
-    what:
-      - \"*\"
-      - \"!stop\"
-      - \"!start\"
-  \"public commands\":
-    who:
-      ip: 127.0.0.1/8
-    what:
-      - status
-      - connected_users_number
-
-shaper:
-  normal:
-    rate: 1000000 # monal (iOS XMPP client) only has 30 seconds to load messages (of which there could be many) from a push notification, hence the high rate
-    burst_size: 5000000 # see above
-  fast: 50000000
-
-shaper_rules:
-  max_user_sessions: 10
-  max_user_offline_messages:
-    5000: admin
-    1000: all
-  c2s_shaper:
-    none: admin
-    normal: all
-  s2s_shaper: fast"
-
-upload2="
-  soft_upload_quota:
-    $softquota: all # MB
-  hard_upload_quota:
-    $hardquota: all # MB"
-
-modules1="
-modules:
-  mod_adhoc: {}
-  mod_admin_extra: {}
-  mod_announce:
-    access: announce
-  mod_avatar: {}
-  mod_blocking: {}
-  mod_bosh: {}
-  mod_caps: {}
-  mod_carboncopy: {}
-  mod_client_state: {}
-  mod_configure: {}
-  mod_disco: {}
-  mod_fail2ban: {}
-  mod_http_api: {}"
-
-upload3="
-  mod_http_upload:
-    put_url: \"https://${domains[4]}/upload/@HOST@\"
-    hosts:
-      - ${domains[4]}
-    custom_headers:
-      \"Access-Control-Allow-Origin\": \"*\"
-      \"Access-Control-Allow-Methods\": \"GET,HEAD,PUT,OPTIONS\"
-      \"Access-Control-Allow-Headers\": \"Content-Type\""
-
-modules2="
-  #mod_http_upload_quota:
-    #max_days: 100 # 100 days until content is deleted
-  mod_last: {}
-  mod_mam:
-    ## Mnesia is limited to 2GB, better to use an SQL backend
-    ## For small servers SQLite is a good fit and is very easy
-    ## to configure. Uncomment this when you have SQL configured:
-    db_type: sql
-    assume_mam_usage: true
-    default: always
-  mod_mqtt: {}
-  mod_muc:
-    access:
-      - allow
-    access_admin:
-      - allow: admin
-    access_create: muc_create
-    access_persistent: muc_create
-    access_mam:
-      - allow
-    default_room_options:
-      mam: true
-  mod_muc_admin: {}
-  mod_offline:
-    access_max_user_messages: max_user_offline_messages
-  mod_ping: {}
-  mod_privacy: {}
-  mod_private: {}
-  mod_proxy65:
-    access: local
-    max_connections: 5
-  mod_pubsub:
-    access_createnode: pubsub_createnode
-    plugins:
-      - flat
-      - pep
-    force_node_config:
-      ## Avoid buggy clients to make their bookmarks public
-      \"eu.siacs.conversations.axolotl.*\":
-        access_model: open
-      storage:bookmarks:
-        access_model: whitelist
-  mod_push: {}
-  mod_push_keepalive: {}
-  mod_register:
-    ## Only accept registration requests from the \"trusted\"
-    ## network (see access_rules section above).
-    ## Think twice before enabling registration from any
-    ## address. See the Jabber SPAM Manifesto for details:
-    ## https://github.com/ge0rg/jabber-spam-fighting-manifesto
-    ip_access: trusted_network
-  mod_roster:
-    versioning: true
-  mod_s2s_dialback: {}
-  mod_shared_roster: {}
-  mod_stream_mgmt:
-    resend_on_timeout: if_offline"
-
-stun2="
-  mod_stun_disco:
-    credentials_lifetime: 12h
-    services:
-      -
-        host: $domain
-        port: 3478
-        type: stun
-        transport: udp
-        restricted: false
-      -
-        host: $domain
-        port: 3478
-        type: turn
-        transport: udp
-        restricted: true"
-
-footer="
-  mod_stun_disco: {}
-  mod_vcard: {}
-  mod_vcard_xupdate: {}
-  mod_version:
-    show_os: false
-
-### Local Variables:
-### mode: yaml
-### End:
-### vim: set filetype=yaml tabstop=8"
-
 pacman -S --noconfirm ejabberd
 
 read -p "Enter your domain: " domain
@@ -863,6 +547,322 @@ then
     echo "Generating dhfile..."
     openssl dhparam -out /etc/ssl/dh2048.pem 2048
 fi
+
+config="
+###
+###              ejabberd configuration file
+###
+### The parameters used in this configuration file are explained at
+###
+###       https://docs.ejabberd.im/admin/configuration
+###
+### The configuration file is written in YAML.
+### *******************************************************
+### *******           !!! WARNING !!!               *******
+### *******     YAML IS INDENTATION SENSITIVE       *******
+### ******* MAKE SURE YOU INDENT SECTIONS CORRECTLY *******
+### *******************************************************
+### Refer to http://en.wikipedia.org/wiki/YAML for the brief description.
+###
+
+# strict TLS configuration to disable insecure ciphers and TLS versions
+define_macro:
+  BACKLOG: 50
+  DH_FILE: /etc/ssl/dh2048.pem
+  CIPHERS: \"ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA256\"
+  TLS_OPTIONS:
+    - \"no_sslv2\"
+    - \"no_sslv3\"
+    - \"no_tlsv1\"
+    - \"no_tlsv1_1\"
+    - \"cipher_server_preference\"
+    - \"no_compression\"
+
+hosts:
+  - $domain
+
+loglevel: info
+
+acme:
+  auto: false
+
+certfiles:
+  - ${ejabberdcertdirs[0]}
+  - ${ejabberdcertdirs[1]}
+  - ${ejabberdcertdirs[2]}
+  - ${ejabberdcertdirs[3]}
+  - ${ejabberdcertdirs[4]}
+
+c2s_ciphers: TLS_CIPHERS
+c2s_protocol_options: TLS_OPTIONS
+c2s_dhfile: DH_FILE
+s2s_ciphers: TLS_CIPHERS
+s2s_protocol_options: TLS_OPTIONS
+s2s_dhfile: DH_FILE
+s2s_use_starttls: required
+
+listen:
+  -
+    port: 5222
+    ip: \"::\"
+    module: ejabberd_c2s
+    max_stanza_size: 262144    
+    starttls: true
+    starttls_required: false
+    tls_compression: false
+    shaper: c2s_shaper
+    access: c2s
+    backlog: BACKLOG
+  -
+    port: 5223
+    ip: \"::\"
+    tls: true
+    backlog: BACKLOG
+    module: ejabberd_c2s
+    max_stanza_size: 262144
+    shaper: c2s_shaper
+    access: c2s
+    tls_compression: false
+  -
+    port: 5269
+    ip: \"::\"
+    module: ejabberd_s2s_in
+    max_stanza_size: 524288
+    tls_compression: false
+  -
+    port: 5270
+    ip: \"::\"
+    backlog: BACKLOG
+    module: ejabberd_s2s_in
+    max_stanza_size: 524288
+    tls_compression: false
+  -
+    port: 5280
+    ip: \"::\"
+    module: ejabberd_http
+    request_handlers:
+      /admin: ejabberd_web_admin
+      /.well-known/acme-challenge: ejabberd_acme"
+
+upload1="
+      /upload: mod_http_upload"
+
+stun1="
+  -
+    port: 3478
+    ip: \"::\"
+    transport: udp
+    module: ejabberd_stun
+    use_turn: true"
+
+midsection="
+  -
+    port: 1883
+    ip: \"::\"
+    module: mod_mqtt
+    backlog: 1000
+
+auth_method: sql
+default_db: sql
+
+sql_type: mysql
+sql_server: \"localhost\"
+sql_database: \"$sqldb\"
+sql_username: \"$sqlusername\"
+sql_password: \"$sqlpassword\"
+
+acl:
+  admin:
+    user: $adminusername@$domain
+  local:
+    user_regexp: \"\"
+  loopback:
+    ip:
+      - 127.0.0.0/8
+      - ::1/128
+
+access_rules:
+  configure:
+    allow: admin # only allow an admin to configure the server
+  local:
+    allow: local
+  c2s:
+    allow: all
+    deny: blocked
+  announce:
+    allow: admin # only allow an admin to send announcements
+  muc_create:
+    allow: admin # only allow an admin to create MUCs
+  pubsub_createnode:
+    allow: local
+  trusted_network:
+    allow: loopback
+
+api_permissions:
+  \"console commands\":
+    from:
+      - ejabberd_ctl
+    who: all
+    what: \"*\"
+  \"admin access\":
+    who:
+      access:
+        allow:
+          - acl: loopback
+          - acl: admin
+      oauth:
+        scope: \"ejabberd:admin\"
+        access:
+          allow:
+            - acl: loopback
+            - acl: admin
+    what:
+      - \"*\"
+      - \"!stop\"
+      - \"!start\"
+  \"public commands\":
+    who:
+      ip: 127.0.0.1/8
+    what:
+      - status
+      - connected_users_number
+
+shaper:
+  normal:
+    rate: 1000000 # monal (iOS XMPP client) only has 30 seconds to load messages (of which there could be many) from a push notification, hence the high rate
+    burst_size: 5000000 # see above
+  fast: 50000000
+
+shaper_rules:
+  max_user_sessions: 10
+  max_user_offline_messages:
+    5000: admin
+    1000: all
+  c2s_shaper:
+    none: admin
+    normal: all
+  s2s_shaper: fast"
+
+upload2="
+  soft_upload_quota:
+    $softquota: all # MB
+  hard_upload_quota:
+    $hardquota: all # MB"
+
+modules1="
+modules:
+  mod_adhoc: {}
+  mod_admin_extra: {}
+  mod_announce:
+    access: announce
+  mod_avatar: {}
+  mod_blocking: {}
+  mod_bosh: {}
+  mod_caps: {}
+  mod_carboncopy: {}
+  mod_client_state: {}
+  mod_configure: {}
+  mod_disco: {}
+  mod_fail2ban: {}
+  mod_http_api: {}"
+
+upload3="
+  mod_http_upload:
+    put_url: \"https://${domains[4]}/upload/@HOST@\"
+    hosts:
+      - ${domains[4]}
+    custom_headers:
+      \"Access-Control-Allow-Origin\": \"*\"
+      \"Access-Control-Allow-Methods\": \"GET,HEAD,PUT,OPTIONS\"
+      \"Access-Control-Allow-Headers\": \"Content-Type\""
+
+modules2="
+  #mod_http_upload_quota:
+    #max_days: 100 # 100 days until content is deleted
+  mod_last: {}
+  mod_mam:
+    ## Mnesia is limited to 2GB, better to use an SQL backend
+    ## For small servers SQLite is a good fit and is very easy
+    ## to configure. Uncomment this when you have SQL configured:
+    db_type: sql
+    assume_mam_usage: true
+    default: always
+  mod_mqtt: {}
+  mod_muc:
+    access:
+      - allow
+    access_admin:
+      - allow: admin
+    access_create: muc_create
+    access_persistent: muc_create
+    access_mam:
+      - allow
+    default_room_options:
+      mam: true
+  mod_muc_admin: {}
+  mod_offline:
+    access_max_user_messages: max_user_offline_messages
+  mod_ping: {}
+  mod_privacy: {}
+  mod_private: {}
+  mod_proxy65:
+    access: local
+    max_connections: 5
+  mod_pubsub:
+    access_createnode: pubsub_createnode
+    plugins:
+      - flat
+      - pep
+    force_node_config:
+      ## Avoid buggy clients to make their bookmarks public
+      \"eu.siacs.conversations.axolotl.*\":
+        access_model: open
+      storage:bookmarks:
+        access_model: whitelist
+  mod_push: {}
+  mod_push_keepalive: {}
+  mod_register:
+    ## Only accept registration requests from the \"trusted\"
+    ## network (see access_rules section above).
+    ## Think twice before enabling registration from any
+    ## address. See the Jabber SPAM Manifesto for details:
+    ## https://github.com/ge0rg/jabber-spam-fighting-manifesto
+    ip_access: trusted_network
+  mod_roster:
+    versioning: true
+  mod_s2s_dialback: {}
+  mod_shared_roster: {}
+  mod_stream_mgmt:
+    resend_on_timeout: if_offline"
+
+stun2="
+  mod_stun_disco:
+    credentials_lifetime: 12h
+    services:
+      -
+        host: $domain
+        port: 3478
+        type: stun
+        transport: udp
+        restricted: false
+      -
+        host: $domain
+        port: 3478
+        type: turn
+        transport: udp
+        restricted: true"
+
+footer="
+  mod_stun_disco: {}
+  mod_vcard: {}
+  mod_vcard_xupdate: {}
+  mod_version:
+    show_os: false
+
+### Local Variables:
+### mode: yaml
+### End:
+### vim: set filetype=yaml tabstop=8"
 
 read -p "Some XMPP clients may support P2P voice / video calls, but will require
 assistance from the server in order to be able to connect to each other through
