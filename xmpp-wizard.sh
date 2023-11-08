@@ -848,18 +848,6 @@ stun2="
         restricted: true"
 
 footer="
-  mod_stun_disco: {}
-  mod_vcard: {}
-  mod_vcard_xupdate: {}
-  mod_version:
-    show_os: false
-
-### Local Variables:
-### mode: yaml
-### End:
-### vim: set filetype=yaml tabstop=8"
-
-footernostun="
   mod_vcard: {}
   mod_vcard_xupdate: {}
   mod_version:
@@ -926,7 +914,7 @@ if [ "$httpuploads" == "y" ]; then
         config+=${modules1}
         config+=${upload3}
         config+=${modules2}
-        config+=${footernostun}
+        config+=${footer}
     fi
 else
     if [ "$stunturn" == "y" ]; then
@@ -940,7 +928,7 @@ else
         config+=${midsection}
         config+=${modules1}
         config+=${modules2}
-        config+=${footernostun}
+        config+=${footer}
     fi
 fi
 
