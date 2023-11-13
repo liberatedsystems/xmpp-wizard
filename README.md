@@ -1,5 +1,5 @@
 # XMPP server setup script
-<div styling="text-align: center">
+<div style="text-align: center">
     <img src="images/thumbnail.png" alt="A priest aiming a gun at the Discord logo" width="500"/>
 </div>
 
