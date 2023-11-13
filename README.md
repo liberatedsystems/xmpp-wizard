@@ -1,4 +1,7 @@
 # XMPP server setup script
+
+![A priest aiming a gun at the Discord logo](images/thumbnail.png)
+
 An XMPP server is hecking hard to configure!! But not any more.
 
 You too, can be an XMPP server operator, through the use of this simple script!
