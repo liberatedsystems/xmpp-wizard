@@ -1,7 +1,5 @@
 # XMPP server setup script
-<div style="text-align: center;">
-    <img src="images/thumbnail.png" alt="A priest aiming a gun at the Discord logo" width="500"/>
-</div>
+<img src="images/thumbnail.png" alt="A priest aiming a gun at the Discord logo" width="500"/>
 
 An XMPP server is hecking hard to configure!! But not any more.
 
